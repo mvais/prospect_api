@@ -9,49 +9,50 @@ module Scraper
 
     base_uri 'https://lscluster.hockeytech.com/feed/'
 
-    def initialize
-      @options = { 
-        query: { 
-          feed: 'modulekit',
-          key: '2976319eb44abe94',
-          client_code: 'ohl',
-          season_id: '68',
-          fmt: 'json',
-        }
-      }
-    end
-
     def schedule
-      response = request({ view: 'schedule', tab: '', category: '' })
+      response = request({ view: 'schedule' })
       response['SiteKit']['Schedule']
     end
 
     def teams
-      response = request({ view: 'teamsbyseason', tab: '', category: '' })
+      response = request({ view: 'teamsbyseason' })
       response['SiteKit']['Teamsbyseason']
     end
 
     def player(id)
-      response = request({player_id: id, view: 'player', category: 'profile' })
-      response['SiteKit']['Player']
+      response1 = request({ player_id: id, view: 'player', category: 'profile' })
+      response2 = request({ player_id: id, view: 'player', category: 'seasonstats' })
+
+      { 
+        profile: response1['SiteKit']['Player'], 
+        stats:   response2['SiteKit']['Player'] 
+      }
     end
 
     private
 
-    def request(options)
-      @options[:query] = params(options)
-
-      if ((response = self.class.get("", @options)).code == 200)
-        JSON.parse(response.body)
+    def request(options, path = "")
+      if ((response = self.class.get(path, params(options))).code == 200)
+        response = JSON.parse(response.body)
       else
-        nil
+        response = nil
       end
+
+      response
+    end
+
+    def default_options
+      { 
+        feed: 'modulekit',
+        key: '2976319eb44abe94',
+        client_code: 'ohl',
+        season_id: '68',
+        fmt: 'json',
+      }
     end
 
     def params(options)
-      options = options.filter { |key, value| [key, value] if value != "" }
-      
-      @options[:query].merge(options)
+      { query: default_options.merge(options) }
     end
   end
 end
