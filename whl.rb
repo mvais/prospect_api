@@ -11,12 +11,12 @@ module Scraper
 
     def schedule
       response = request({ view: 'schedule' })
-      response['SiteKit']['Schedule']
+      response.dig('SiteKit', 'Schedule')
     end
 
     def teams
       response = request({ view: 'teamsbyseason' })
-      response['SiteKit']['Teamsbyseason']
+      response.dig('SiteKit', 'Teamsbyseason')
     end
 
     def player(id)
@@ -24,9 +24,14 @@ module Scraper
       response2 = request({ player_id: id, view: 'player', category: 'seasonstats' })
 
       { 
-        profile: response1['SiteKit']['Player'], 
-        stats:   response2['SiteKit']['Player'] 
+        profile: response1.dig('SiteKit', 'Player'), 
+        stats:   response2.dig('SiteKit', 'Player')
       }
+    end
+
+    def leading_scorers
+      response = request({ view: 'statviewtype', type: 'topscorers', first: 0, limit: 1000, sort: 'active' })
+      response.dig('SiteKit', 'Statviewtype')
     end
 
     private
@@ -35,7 +40,7 @@ module Scraper
       if ((response = self.class.get(path, params(options))).code == 200)
         response = JSON.parse(response.body)
       else
-        response = nil
+        response = {}
       end
 
       response
