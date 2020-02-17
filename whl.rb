@@ -4,7 +4,7 @@ require 'nokogiri'
 require 'json'
 
 module Scraper
-  class WHL
+  class CHL
     include HTTParty
 
     base_uri 'https://lscluster.hockeytech.com/feed/'
@@ -31,19 +31,19 @@ module Scraper
 
     def leading_scorers
       response = request({ view: 'statviewtype', type: 'topscorers', first: 0, limit: 1000, sort: 'active' })
-      response.dig('SiteKit', 'Statviewtype')
+      response.dig('SiteKit', 'Statviewtype').filter { |player| player["position"] != 'G' }
     end
 
     private
 
     def request(options, path = "")
-      if ((response = self.class.get(path, params(options))).code == 200)
-        response = JSON.parse(response.body)
-      else
-        response = {}
-      end
+      response = self.class.get(path, params(options))
 
-      response
+      if (response.code == 200)
+        JSON.parse(response.body)
+      else
+        {}
+      end
     end
 
     def default_options
@@ -61,3 +61,5 @@ module Scraper
     end
   end
 end
+
+binding.pry
