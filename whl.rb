@@ -61,5 +61,3 @@ module Scraper
     end
   end
 end
-
-binding.pry
