@@ -1,6 +1,5 @@
 require 'pry'
 require 'httparty'
-require 'nokogiri'
 require 'json'
 
 module Scraper
@@ -10,18 +9,18 @@ module Scraper
     base_uri 'https://lscluster.hockeytech.com/feed/'
 
     def schedule
-      response = request({ view: 'schedule' })
+      response = request("", view: 'schedule')
       response.dig('SiteKit', 'Schedule')
     end
 
     def teams
-      response = request({ view: 'teamsbyseason' })
+      response = request("", view: 'teamsbyseason')
       response.dig('SiteKit', 'Teamsbyseason')
     end
 
     def player(id)
-      response1 = request({ player_id: id, view: 'player', category: 'profile' })
-      response2 = request({ player_id: id, view: 'player', category: 'seasonstats' })
+      response1 = request("", player_id: id, view: 'player', category: 'profile')
+      response2 = request("", player_id: id, view: 'player', category: 'seasonstats')
 
       { 
         profile: response1.dig('SiteKit', 'Player'), 
@@ -29,18 +28,23 @@ module Scraper
       }
     end
 
-    def leading_scorers
-      response = request({ view: 'statviewtype', type: 'topscorers', first: 0, limit: 1000, sort: 'active' })
+    def skaters
+      response = request("", view: 'statviewtype', type: 'topscorers', first: 0, limit: 1000, sort: 'active')
       response.dig('SiteKit', 'Statviewtype').filter { |player| player["position"] != 'G' }
+    end
+
+    def goalies
+      response = request("", view: 'statviewtype', type: 'topgoalies',  first: 0, limit: 1000, sort: 'active')
+      response.dig('SiteKit', 'Statviewtype')
     end
 
     private
 
-    def request(options, path = "")
+    def request(path = "", options = {})
       response = self.class.get(path, params(options))
 
       if (response.code == 200)
-        JSON.parse(response.body)
+        JSON.parse(response.body, )
       else
         {}
       end
