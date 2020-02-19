@@ -1,20 +1,21 @@
 require 'pry'
 require 'httparty'
 require 'json'
+require_relative './utils'
 
-module Scraper
+module Prospect
   class CHL
     include HTTParty
 
     base_uri 'https://lscluster.hockeytech.com/feed/'
 
-    def initialize
+    def initialize(league = 'ohl')
       @default_options = {
+        fmt: 'json',
         feed: 'modulekit',
-        key: '2976319eb44abe94',
-        client_code: 'ohl',
-        season_id: '68',
-        fmt: 'json'
+        client_code: league&.downcase,
+        key: Prospect::Utils.fetch_key(league),
+        season_id: Prospect::Utils.fetch_season_id(league)
       }
     end
 
@@ -65,3 +66,5 @@ module Scraper
     end
   end
 end
+
+binding.pry
