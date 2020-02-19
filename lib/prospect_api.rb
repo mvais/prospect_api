@@ -13,7 +13,7 @@ module Prospect
       @default_options = {
         fmt: 'json',
         feed: 'modulekit',
-        client_code: league&.downcase,
+        client_code: Prospect::Utils.fetch_code(league),
         key: Prospect::Utils.fetch_key(league),
         season_id: Prospect::Utils.fetch_season_id(league)
       }
