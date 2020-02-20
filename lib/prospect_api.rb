@@ -42,19 +42,27 @@ module Prospect
       response2 = request('', player_id: id, view: 'player', category: 'seasonstats')
 
       {
-        profile: response1.dig('SiteKit', 'Player'),
-        stats: response2.dig('SiteKit', 'Player')
+        "profile": response1.dig('SiteKit', 'Player'),
+        "stats": response2.dig('SiteKit', 'Player')
       }
     end
 
     def skaters
-      response = request('', view: 'statviewtype', type: 'topscorers', first: 0, limit: 1000, sort: 'active')
+      response = request(
+        '',
+        view: 'statviewtype', type: 'topscorers', first: 0, limit: 1000
+      )
+
       response.dig('SiteKit', 'Statviewtype').reject! { |player| player["position"] == 'G' }
     end
 
     def goalies
-      response = request('', view: 'statviewtype', type: 'topgoalies', first: 0, limit: 1000, sort: 'active')
-      response.dig('SiteKit', 'Statviewtype')
+      response = request(
+        '/index.php',
+        view: 'players', position: 'goalies', sort: 'wins', feed: 'statviewfeed', first: 0, limit: 1000
+      )
+
+      response.dig(0, 'sections', 0, 'data').map { |goalie| goalie['row'] }
     end
 
     private
@@ -62,15 +70,18 @@ module Prospect
     def request(path = '', options = {})
       response = self.class.get(path, params(options))
 
-      if response.code == 200
-        JSON.parse(response.body)
-      else
-        {}
-      end
+      return {} unless response.code == 200
+      return JSON.parse(response.body[1..-2]) if jsonp?(response.body)
+
+      JSON.parse(response.body)
     end
 
     def params(options)
       { query: @default_options.merge(options) }
+    end
+
+    def jsonp?(body)
+      body[0] == '(' && body[-1] == ')'
     end
   end
 end
