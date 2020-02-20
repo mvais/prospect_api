@@ -9,7 +9,7 @@ module Prospect
 
     base_uri 'https://lscluster.hockeytech.com/feed/'
 
-    def initialize(league = 'ohl')
+    def initialize(league = 'cchl')
       @default_options = {
         fmt: 'json',
         feed: 'modulekit',

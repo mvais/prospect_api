@@ -11,6 +11,11 @@ module Prospect
         season_ids: [40],
         key: 'ca4e9e599d4dae55'
       },
+      cchl: {
+        code: 'cchl',
+        season_ids: [44],
+        key: '18e5d35386c4a5a7'
+      },
       ohl: {
         code: 'ohl',
         season_ids: [68],
@@ -30,6 +35,11 @@ module Prospect
         code: 'ushl',
         season_ids: [71],
         key: 'e828f89b243dc43f'
+      },
+      sjhl: {
+        code: 'sjhl',
+        season_ids: [46],
+        key: '2fb5c2e84bf3e4a8'
       }
     }
 
