@@ -1,6 +1,16 @@
 module Prospect
   class Utils
     @leagues = {
+      ahl: {
+        code: 'ahl',
+        season_ids: [65],
+        key: '50c2cd9b5e18e390'
+      },
+      bchl: {
+        code: 'bchl',
+        season_ids: [40],
+        key: 'ca4e9e599d4dae55'
+      },
       ohl: {
         code: 'ohl',
         season_ids: [68],
@@ -15,6 +25,11 @@ module Prospect
         code: 'lhjmq',
         season_ids: [193],
         key: 'f322673b6bcae299'
+      },
+      ushl: {
+        code: 'ushl',
+        season_ids: [71],
+        key: 'e828f89b243dc43f'
       }
     }
 

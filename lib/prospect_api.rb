@@ -4,7 +4,7 @@ require 'json'
 require_relative './utils'
 
 module Prospect
-  class CHL
+  class API
     include HTTParty
 
     base_uri 'https://lscluster.hockeytech.com/feed/'
