@@ -20,15 +20,15 @@ module Prospect
 
     def self.fetch_season_id(league)
       symbol = league&.downcase&.to_sym
-      
+
       if @leagues.key?(symbol)
         @leagues[symbol][:season_ids].last
       end
     end
-    
+
     def self.fetch_key(league)
       symbol = league&.downcase&.to_sym
-      
+
       if @leagues.key?(symbol)
         @leagues[symbol][:key]
       end
@@ -40,6 +40,10 @@ module Prospect
       if @leagues.key?(symbol)
         @leagues[symbol][:code]
       end
+    end
+
+    def self.valid_league?(league)
+      @leagues.key?(league&.downcase&.to_sym)
     end
   end
 end

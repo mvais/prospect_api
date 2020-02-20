@@ -19,6 +19,14 @@ module Prospect
       }
     end
 
+    def change_league(league)
+      return unless Prospect::Utils.valid_league?(league)
+
+      @default_options[:client_code] = Prospect::Utils.fetch_code(league)
+      @default_options[:key]         = Prospect::Utils.fetch_key(league)
+      @default_options[:season_id]   = Prospect::Utils.fetch_season_id(league)
+    end
+
     def schedule
       response = request('', view: 'schedule')
       response.dig('SiteKit', 'Schedule')
@@ -66,5 +74,3 @@ module Prospect
     end
   end
 end
-
-binding.pry
